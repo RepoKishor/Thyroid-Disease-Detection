@@ -1,1 +1,11 @@
-pymongo
+pymongo==4.2.0
+python-dotenv==0.21.0
+types-s3transfer==0.6.0.post4
+uvicorn==0.18.3
+watchfiles==0.17.0
+websockets==10.3
+wincertstore==0.2
+xgboost==1.6.2
+pandas
+pyYAML
+numpy
