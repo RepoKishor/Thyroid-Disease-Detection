@@ -3,7 +3,7 @@ from thyroid.exception import ThyroidException
 from thyroid.logger import logging
 from typing import Optional
 import os,sys 
-from xgboost import XGBClassifier
+from sklearn.ensemble import RandomForestClassifier
 from thyroid import utils
 from sklearn.metrics import f1_score
 
@@ -20,7 +20,7 @@ class ModelTrainer:
             self.data_transformation_artifact=data_transformation_artifact
 
         except Exception as e:
-            raise SensorException(e, sys)
+            raise ThyroidException(e, sys)
 
     def train_model(self,x,y):
         try:
@@ -28,7 +28,7 @@ class ModelTrainer:
             random_forest_model.fit(x,y)
             return random_forest_model
         except Exception as e:
-            raise SensorException(e, sys)
+            raise ThyroidException(e, sys)
     
 
     def initiate_model_trainer(self,)->artifact_entity.ModelTrainerArtifact:
@@ -46,11 +46,11 @@ class ModelTrainer:
 
             logging.info(f"Calculating f1 train score")
             yhat_train = model.predict(x_train)
-            f1_train_score  =f1_score(y_true=y_train, y_pred=yhat_train)
+            f1_train_score  =f1_score(y_true=y_train, y_pred=yhat_train, average='micro')
 
             logging.info(f"Calculating f1 test score")
             yhat_test = model.predict(x_test)
-            f1_test_score  =f1_score(y_true=y_test, y_pred=yhat_test)
+            f1_test_score  =f1_score(y_true=y_test, y_pred=yhat_test, average='micro')
             
             logging.info(f"train score:{f1_train_score} and tests score {f1_test_score}")
             #check for overfitting or underfiiting or expected score

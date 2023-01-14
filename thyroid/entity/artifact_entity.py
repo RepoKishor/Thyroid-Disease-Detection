@@ -11,8 +11,6 @@ class DataIngestionArtifact:
 class DataValidationArtifact:
     report_file_path:str
  
-
-
 @dataclass
 class DataTransformationArtifact:
     transform_object_path:str
@@ -20,7 +18,6 @@ class DataTransformationArtifact:
     transformed_test_path:str
     target_encoder_path:str
  
-
 @dataclass
 class ModelTrainerArtifact:
     model_path:str 

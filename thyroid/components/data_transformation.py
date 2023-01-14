@@ -11,7 +11,7 @@ from sklearn.preprocessing import LabelEncoder
 from imblearn.over_sampling import RandomOverSampler
 from sklearn.impute import KNNImputer
 from sklearn.preprocessing import RobustScaler
-from sensor.config import TARGET_COLUMN
+from thyroid.config import TARGET_COLUMN
 
 class DataTransformation:
 
@@ -40,6 +40,26 @@ class DataTransformation:
             raise ThyroidException(e, sys)
 
 
+    def columnsPreprocessing(self,df:pd.DataFrame)->Optional[pd.DataFrame]:
+        try:
+            drop_column_names = ['TBG','TSH_measured','T3_measured','TT4_measured','T4U_measured','FTI_measured','TBG_measured']
+            logging.info(f"Dropping as these columns are indicators of value in the next column")
+            df.drop(list(drop_column_names),axis=1,inplace=True)
+
+            df['sex'] = df['sex'].map({'F' : 0, 'M' : 1})
+            for column in df.columns:
+                if  len(df[column].unique())==2:
+                    df[column] = df[column].map({'f' : 0, 't' : 1})
+                if len(df[column].unique())==1:
+                    df[column] = df[column].map({'f' : 0, 't' : 1})
+
+
+            df = pd.get_dummies(df, columns=['referral_source'])
+            #logging.info(f"unique values of tumor: {df['tumor'].unique()}")
+            return df
+        except Exception as e:
+            raise ThyroidException(e, sys)
+
     def initiate_data_transformation(self,) -> artifact_entity.DataTransformationArtifact:
         try:
             #reading training and testing file
@@ -48,7 +68,12 @@ class DataTransformation:
             
             #selecting input feature for train and test dataframe
             input_feature_train_df=train_df.drop(TARGET_COLUMN,axis=1)
-            input_feature_test_df=test_df.drop(TARGET_COLUMN,axis=1)
+            input_feature_train_df = self.columnsPreprocessing(df=input_feature_train_df)
+            input_feature_train_df.replace({"?":np.NAN},inplace=True)
+
+            input_feature_test_df = test_df.drop(TARGET_COLUMN,axis=1)
+            input_feature_test_df = self.columnsPreprocessing(df=input_feature_test_df)
+            input_feature_test_df.replace({"?":np.NAN},inplace=True)
 
             #selecting target feature for train and test dataframe
             target_feature_train_df = train_df[TARGET_COLUMN]
@@ -60,7 +85,7 @@ class DataTransformation:
             #transformation on target columns
             target_feature_train_arr = label_encoder.transform(target_feature_train_df)
             target_feature_test_arr = label_encoder.transform(target_feature_test_df)
-
+            logging.info(f"input_feature_train_df<<<<<<<<<: {input_feature_train_df}")
             transformation_pipleine = DataTransformation.get_data_transformer_object()
             transformation_pipleine.fit(input_feature_train_df)
 
