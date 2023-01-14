@@ -95,7 +95,7 @@ class DataTransformation:
             
 
             #smt = SMOTETomek(sampling_strategy="auto")
-            rndovrsample = RandomOverSampler()
+            rndovrsample = RandomOverSampler(random_state=49)
             logging.info(f"Before resampling in training set Input: {input_feature_train_arr.shape} Target:{target_feature_train_arr.shape}")
             input_feature_train_arr, target_feature_train_arr = rndovrsample.fit_resample(input_feature_train_arr, target_feature_train_arr)
             logging.info(f"After resampling in training set Input: {input_feature_train_arr.shape} Target:{target_feature_train_arr.shape}")
