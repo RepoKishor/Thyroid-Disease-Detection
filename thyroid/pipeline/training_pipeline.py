@@ -13,6 +13,7 @@ from thyroid.components.model_pusher import ModelPusher
 import sys,os
 
 
+
 def start_training_pipeline():
     try:
         training_pipeline_config = config_entity.TrainingPipelineConfig()
