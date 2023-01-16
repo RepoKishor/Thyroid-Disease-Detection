@@ -6,6 +6,7 @@ import os,sys
 from sklearn.ensemble import RandomForestClassifier
 from thyroid import utils
 from sklearn.metrics import f1_score
+from thyroid import ModelRefiner
 
 
 class ModelTrainer:
@@ -41,8 +42,13 @@ class ModelTrainer:
             x_train,y_train = train_arr[:,:-1],train_arr[:,-1]
             x_test,y_test = test_arr[:,:-1],test_arr[:,-1]
 
+            #trying to find the best model
+            
+            model_name,model = ModelRefiner.get_best_model(x_train,y_train,x_test,y_test)
+
+            logging.info(f"best model_name:{model_name} ")
             logging.info(f"Train the model")
-            model = self.train_model(x=x_train,y=y_train)
+            #model = self.train_model(x=x_train,y=y_train)
 
             logging.info(f"Calculating f1 train score")
             yhat_train = model.predict(x_train)
