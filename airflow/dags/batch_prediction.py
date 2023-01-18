@@ -8,7 +8,7 @@ from airflow.operators.python import PythonOperator
 
 
 with DAG(
-    'thyroid_training',
+    'batch_prediction',
     default_args={'retries': 2},
     # [END default_args]
     description='Thyroid Disease Detection',
